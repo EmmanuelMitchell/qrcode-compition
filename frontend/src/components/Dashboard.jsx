@@ -16,6 +16,7 @@ function Dashboard() {
       setLoading(true);
       setError(null);
       const data = await api.getDashboardData();
+      console.log(data)
       setDashboardData(data);
     } catch (error) {
       setError('Failed to load dashboard data');
