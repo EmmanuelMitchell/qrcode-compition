@@ -164,11 +164,12 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/dashboard`);
       const responseData = await response.json();
+      console.log(responseData)
   
-      if (!response.ok) {
-        console.error('Dashboard API Error:', responseData);
-        throw new Error(responseData.error || 'Failed to fetch dashboard data');
-      }
+      // if (!response.ok) {
+      //   console.error('Dashboard API Error:', responseData);
+      //   throw new Error(responseData.error || 'Failed to fetch dashboard data');
+      // }
   
       return responseData;
     } catch (error) {
