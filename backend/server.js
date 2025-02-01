@@ -126,7 +126,12 @@ const cors = require('cors');
 const prisma = new PrismaClient();
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: "https://qrcode-compition.vercel.app",
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true
+}));
 app.use(express.json());
 
 // Initialize shops with proper IDs and URLs

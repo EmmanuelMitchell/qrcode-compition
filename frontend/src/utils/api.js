@@ -55,7 +55,11 @@
 
 
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+
+
 
 export const api = {
   /**
