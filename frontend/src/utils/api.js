@@ -99,6 +99,7 @@ export const api = {
       });
   
       const responseData = await response.json(); // Capture response data
+      console.log(response)
   
       if (!response.ok) {
         console.error('API Response Error:', responseData);
