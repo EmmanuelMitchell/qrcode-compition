@@ -66,8 +66,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import PhoneForm from "./PhoneForm";
+// import PhoneForm from "./PhoneForm";
 import { api } from "../utils/api";
+import PhoneForm from "./PhoneForm";
 
 function Scanner() {
   const { shopId } = useParams();
@@ -90,9 +91,11 @@ function Scanner() {
     }
 
     setLoading(false);
+    setShowForm(false)
   }, [shopId]);
 
   const handlePhoneSubmit = async (phoneNumber) => {
+    setShowForm(false)
     try {
       setError(null);
       setShowForm(false); // Hide form after submission
