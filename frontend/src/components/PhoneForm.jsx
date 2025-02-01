@@ -81,9 +81,7 @@ const PhoneForm = ({ shopId, onSubmit }) => {
         </button>
       </form>
 
-      <p className="mt-4 text-xs text-center text-gray-500">
-        By continuing, you agree to receive an SMS with the download link
-      </p>
+      
     </div>
   );
 };
