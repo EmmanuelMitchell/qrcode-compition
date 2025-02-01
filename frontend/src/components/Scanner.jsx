@@ -62,80 +62,68 @@
 
 // export default Scanner;
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import PhoneForm from './PhoneForm';
-import { api } from '../utils/api';
+
+
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import PhoneForm from "./PhoneForm";
+import { api } from "../utils/api";
 
 function Scanner() {
   const { shopId } = useParams();
   const [showForm, setShowForm] = useState(true);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState({
-    currentShopId: null,
-    validationPassed: false,
-    renderPhase: 'initial'
-  });
 
   useEffect(() => {
-    // Debug logging
-    console.log('Current shopId:', shopId);
-    setDebugInfo(prev => ({ ...prev, currentShopId: shopId }));
+    if (!shopId) {
+      setError("Shop ID is missing.");
+      setLoading(false);
+      return;
+    }
 
-    // Validate the shop ID format
     const isValidFormat = /^[a-z]+-(?:android|iphone)$/.test(shopId);
-    console.log('Shop ID format valid:', isValidFormat);
-    setDebugInfo(prev => ({ ...prev, validationPassed: isValidFormat }));
-
     if (!isValidFormat) {
-      setError('Invalid shop format');
+      setError("Invalid shop format.");
       setLoading(false);
       return;
     }
 
     setLoading(false);
-    setDebugInfo(prev => ({ ...prev, renderPhase: 'ready' }));
   }, [shopId]);
 
   const handlePhoneSubmit = async (phoneNumber) => {
     try {
       setError(null);
-      console.log('Attempting submission with:', { shopId, phoneNumber });
+      setShowForm(false); // Hide form after submission
       const { redirectUrl } = await api.recordScan(shopId, phoneNumber);
-      window.location.href = redirectUrl;
+      window.location.href = redirectUrl; // Redirect to App Store or Play Store
     } catch (error) {
-      setError('Failed to record scan. Please try again.');
-      console.error('Scan error:', error);
+      setError("Failed to record scan. Please try again.");
+      setShowForm(true); // Show form again if an error occurs
+      console.error("Scan error:", error);
     }
   };
 
-  // Debug display
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mb-4 p-4 bg-gray-100 rounded-lg w-full max-w-md">
-          <h3 className="text-lg font-bold mb-2">Debug Info:</h3>
-          <pre className="text-sm">
-            {JSON.stringify(debugInfo, null, 2)}
-          </pre>
-        </div>
-      )}
-
-      {loading && (
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-xl text-gray-600">Loading...</div>
-      )}
+      </div>
+    );
+  }
 
-      {error && (
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-xl text-red-600">{error}</div>
-      )}
+      </div>
+    );
+  }
 
-      {!loading && !error && showForm && (
-        <PhoneForm
-          shopId={shopId}
-          onSubmit={handlePhoneSubmit}
-        />
-      )}
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      {showForm && <PhoneForm shopId={shopId} onSubmit={handlePhoneSubmit} />}
     </div>
   );
 }

@@ -64,56 +64,56 @@ app.post('/api/init-shops', async (req, res) => {
 });
 
 // Record a new scan
-// app.post('/api/scans', async (req, res) => {
-//   const { shopId, phoneNumber } = req.body;
-
-//   try {
-//     // Check if shop exists
-//     const shop = await prisma.shop.findUnique({
-//       where: { id: shopId },
-//     });
-
-//     if (!shop) {
-//       return res.status(404).json({ error: 'Shop not found' });
-//     }
-
-//     // Create new scan
-//     const scan = await prisma.scan.create({
-//       data: {
-//         shopId,
-//         phoneNumber,
-//       },
-//     });
-
-//     // Return both scan data and shop URL for redirect
-//     res.json({
-//       scan,
-//       redirectUrl: shop.url
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Failed to record scan' });
-//   }
-// });
-
 app.post('/api/scans', async (req, res) => {
   const { shopId, phoneNumber } = req.body;
 
   try {
-    const shop = await prisma.shop.findUnique({ where: { id: shopId } });
+    // Check if shop exists
+    const shop = await prisma.shop.findUnique({
+      where: { id: shopId },
+    });
 
     if (!shop) {
-      return res.status(404).json({ error: 'Shop not found' }); // ✅ JSON response
+      return res.status(404).json({ error: 'Shop not found' });
     }
 
-    const scan = await prisma.scan.create({ data: { shopId, phoneNumber } });
+    // Create new scan
+    const scan = await prisma.scan.create({
+      data: {
+        shopId,
+        phoneNumber,
+      },
+    });
 
-    res.json({ scan, redirectUrl: shop.url }); // ✅ Always return JSON
+    // Return both scan data and shop URL for redirect
+    res.json({
+      scan,
+      redirectUrl: shop.url
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to record scan' }); // ✅ JSON error response
+    res.status(500).json({ error: 'Failed to record scan' });
   }
 });
+
+// app.post('/api/scans', async (req, res) => {
+//   const { shopId, phoneNumber } = req.body;
+
+//   try {
+//     const shop = await prisma.shop.findUnique({ where: { id: shopId } });
+
+//     if (!shop) {
+//       return res.status(404).json({ error: 'Shop not found' }); // ✅ JSON response
+//     }
+
+//     const scan = await prisma.scan.create({ data: { shopId, phoneNumber } });
+
+//     res.json({ scan, redirectUrl: shop.url }); // ✅ Always return JSON
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Failed to record scan' }); // ✅ JSON error response
+//   }
+// });
 
 
 // Get dashboard data with formatted shop information
