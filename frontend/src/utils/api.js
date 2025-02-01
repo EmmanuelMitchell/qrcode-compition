@@ -69,6 +69,26 @@ export const api = {
    * @returns {Promise<{scan: Object, redirectUrl: string}>}
    */
   async recordScan(shopId, phoneNumber) {
+    // try {
+    //   const response = await fetch(`${API_BASE_URL}/scans`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ shopId, phoneNumber }),
+    //   });
+
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     throw new Error(errorData.error || 'Failed to record scan');
+    //   }
+
+    //   const data = await response.json();
+    //   return data; // Returns { scan, redirectUrl }
+    // } catch (error) {
+    //   console.error('API Error:', error);
+    //   throw error;
+    // }
     try {
       const response = await fetch(`${API_BASE_URL}/scans`, {
         method: 'POST',
@@ -77,16 +97,17 @@ export const api = {
         },
         body: JSON.stringify({ shopId, phoneNumber }),
       });
-
+  
+      const responseData = await response.json(); // Capture response data
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to record scan');
+        console.error('API Response Error:', responseData);
+        throw new Error(responseData.error || 'Failed to record scan');
       }
-
-      const data = await response.json();
-      return data; // Returns { scan, redirectUrl }
+  
+      return responseData; // Returns { scan, redirectUrl }
     } catch (error) {
-      console.error('API Error:', error);
+      console.error('API Error:', error.message);
       throw error;
     }
   },
@@ -125,17 +146,32 @@ export const api = {
    * @returns {Promise<Object>}
    */
   async getShopData(shopId) {
+    // try {
+    //   const response = await fetch(`${API_BASE_URL}/shops/${shopId}`);
+
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     throw new Error(errorData.error || 'Failed to fetch shop data');
+    //   }
+
+    //   return await response.json();
+    // } catch (error) {
+    //   console.error('API Error:', error);
+    //   throw error;
+    // }
+
     try {
-      const response = await fetch(`${API_BASE_URL}/shops/${shopId}`);
-
+      const response = await fetch(`${API_BASE_URL}/dashboard`);
+      const responseData = await response.json();
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch shop data');
+        console.error('Dashboard API Error:', responseData);
+        throw new Error(responseData.error || 'Failed to fetch dashboard data');
       }
-
-      return await response.json();
+  
+      return responseData;
     } catch (error) {
-      console.error('API Error:', error);
+      console.error('API Error:', error.message);
       throw error;
     }
   },

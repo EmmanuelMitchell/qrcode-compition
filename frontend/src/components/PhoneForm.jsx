@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from 'react';
 
 const PhoneForm = ({ shopId, onSubmit }) => {
