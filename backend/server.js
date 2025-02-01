@@ -8,11 +8,17 @@ const app = express();
 
 // app.use(cors());
 
-app.use(cors({
-  origin: ["https://qrcode-compition.vercel.app", "http://localhost:5173"],
-  methods: "GET,POST,PUT,DELETE",
-  credentials: true
-}));
+// app.use(cors({
+//   origin: ["https://qrcode-compition.vercel.app", "http://localhost:3001"],
+//   methods: "GET,POST,PUT,DELETE",
+//   credentials: true
+// }));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
