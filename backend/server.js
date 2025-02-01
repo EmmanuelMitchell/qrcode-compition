@@ -6,13 +6,7 @@ const cors = require('cors');
 const prisma = new PrismaClient();
 const app = express();
 
-// app.use(cors());
 
-// app.use(cors({
-//   origin: ["https://qrcode-compition.vercel.app", "http://localhost:3001"],
-//   methods: "GET,POST,PUT,DELETE",
-//   credentials: true
-// }));
 app.use(
   cors({
     origin: "*",
