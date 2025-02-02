@@ -205,14 +205,92 @@
 
 
 
+// const express = require('express');
+// const cors = require('cors');
+// const Database = require('better-sqlite3');
+// const { fileURLToPath } = require('url');
+// const { dirname, join } = require('path');
+
+// // __dirname is available globally in CommonJS
+// const db = new Database(join(__dirname, 'scans.db'));
+
+// // Initialize database
+// db.exec(`
+//   CREATE TABLE IF NOT EXISTS scans (
+//     id INTEGER PRIMARY KEY AUTOINCREMENT,
+//     shopId TEXT NOT NULL,
+//     phoneNumber TEXT NOT NULL,
+//     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     UNIQUE(shopId, phoneNumber)
+//   )
+// `);
+
+// const app = express();
+
+// app.use(
+//   cors({
+//     origin: "*",
+//   })
+// );
+// app.use(cors());
+// app.use(express.json());
+
+// // Get scan data for all shops
+// app.get('/api/scans', (req, res) => {
+//   try {
+//     // Get all unique shopIds with their scan counts
+//     const scans = db.prepare(`
+//       SELECT 
+//         shopId,
+//         COUNT(*) as count,
+//         GROUP_CONCAT(DISTINCT phoneNumber) as phoneNumbers
+//       FROM scans
+//       GROUP BY shopId
+//     `).all();
+
+//     const result = {};
+//     scans.forEach((scan) => {
+//       result[scan.shopId] = {
+//         count: scan.count,
+//         phoneNumbers: scan.phoneNumbers ? scan.phoneNumbers.split(',') : []
+//       };
+//     });
+
+//     res.json(result);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Failed to fetch scan data' });
+//   }
+// });
+
+// // Record new scan
+// app.post('/api/scans', (req, res) => {
+//   const { shopId, phoneNumber } = req.body;
+//   try {
+//     const stmt = db.prepare(`
+//       INSERT OR IGNORE INTO scans (shopId, phoneNumber)
+//       VALUES (?, ?)
+//     `);
+//     stmt.run(shopId, phoneNumber);
+//     res.json({ success: true });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Failed to record scan' });
+//   }
+// });
+
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+
 const express = require('express');
 const cors = require('cors');
 const Database = require('better-sqlite3');
-const { fileURLToPath } = require('url');
-const { dirname, join } = require('path');
+const { join } = require('path');
 
-// __dirname is available globally in CommonJS
-const db = new Database(join(__dirname, 'scans.db'));
+const db = new Database(join(process.cwd(), 'scans.db'), { fileMustExist: false });
 
 // Initialize database
 db.exec(`
@@ -227,38 +305,29 @@ db.exec(`
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // Get scan data for all shops
 app.get('/api/scans', (req, res) => {
   try {
-    // Get all unique shopIds with their scan counts
     const scans = db.prepare(`
-      SELECT 
-        shopId,
-        COUNT(*) as count,
-        GROUP_CONCAT(DISTINCT phoneNumber) as phoneNumbers
+      SELECT shopId, COUNT(*) as count, GROUP_CONCAT(DISTINCT phoneNumber) as phoneNumbers
       FROM scans
       GROUP BY shopId
     `).all();
 
-    const result = {};
-    scans.forEach((scan) => {
-      result[scan.shopId] = {
+    const result = scans.reduce((acc, scan) => {
+      acc[scan.shopId] = {
         count: scan.count,
         phoneNumbers: scan.phoneNumbers ? scan.phoneNumbers.split(',') : []
       };
-    });
+      return acc;
+    }, {});
 
     res.json(result);
   } catch (error) {
-    console.error(error);
+    console.error("Database error:", error);
     res.status(500).json({ error: 'Failed to fetch scan data' });
   }
 });
@@ -266,20 +335,26 @@ app.get('/api/scans', (req, res) => {
 // Record new scan
 app.post('/api/scans', (req, res) => {
   const { shopId, phoneNumber } = req.body;
+
+  if (!shopId || !phoneNumber) {
+    return res.status(400).json({ error: 'Missing shopId or phoneNumber' });
+  }
+
   try {
-    const stmt = db.prepare(`
-      INSERT OR IGNORE INTO scans (shopId, phoneNumber)
-      VALUES (?, ?)
-    `);
-    stmt.run(shopId, phoneNumber);
-    res.json({ success: true });
+    const stmt = db.prepare(`INSERT OR IGNORE INTO scans (shopId, phoneNumber) VALUES (?, ?)`);
+    const result = stmt.run(shopId, phoneNumber);
+
+    res.json({
+      success: result.changes > 0,
+      message: result.changes > 0 ? 'Scan recorded' : 'Duplicate scan ignored'
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Insert error:", error);
     res.status(500).json({ error: 'Failed to record scan' });
   }
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
