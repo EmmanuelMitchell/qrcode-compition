@@ -136,7 +136,7 @@ function Dashboard() {
 
   const fetchScanData = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/scans`);
+      const response = await fetch(`https://qrcode-compition.onrender.com/api/scans`);
       const data = await response.json();
       setScanData(data);
     } catch (error) {
@@ -157,7 +157,7 @@ function Dashboard() {
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <Smartphone className="w-6 h-6 text-green-600" />
-            <h2 className="text-2xl font-semibold text-gray-800">Android Shops</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">Android Shopss</h2>
           </div>
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
@@ -172,7 +172,7 @@ function Dashboard() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {androidShops.map((shop) => {
                   const data = getShopData(shop.id);
-                  return (
+                  return (                                                
                     <tr key={shop.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{shop.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{data.count}</td>
