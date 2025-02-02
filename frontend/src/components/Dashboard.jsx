@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { shops } from '../data/shops';
 import { Smartphone, Phone } from 'lucide-react';
-import { API_BASE_URL } from '../utils/api';
+// import { API_BASE_URL } from '../utils/api';
 
 function Dashboard() {
   const [scanData, setScanData] = useState({});
@@ -17,6 +17,7 @@ function Dashboard() {
   const fetchScanData = async () => {
     try {
       const response = await fetch(`https://qrcode-compition.onrender.com/api/scans`);
+      // const response = await fetch(`http://localhost:5000/api/scans`);
       const data = await response.json();
       setScanData(data);
     } catch (error) {

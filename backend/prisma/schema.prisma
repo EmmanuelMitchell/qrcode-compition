@@ -35,6 +35,26 @@
 // }
 
 
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+// model Scan {
+//   id          Int      @id @default(autoincrement())
+//   shopId      String
+//   phoneNumber String
+//   createdAt   DateTime @default(now())
+
+//   @@unique([shopId, phoneNumber])
+// }
+
+
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -44,11 +64,28 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+model Shop {
+  id        String   @id // Format: "{name}-{platform}" (e.g., "bo-android")
+  name      String   // Display name (e.g., "Bo")
+  platform  String   // Either "android" or "iphone"
+  url       String   // Store URL for redirecting after scan
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scans     Scan[]
+
+  @@index([name, platform])
+  @@unique([name, platform])
+}
+
 model Scan {
   id          Int      @id @default(autoincrement())
   shopId      String
   phoneNumber String
   createdAt   DateTime @default(now())
+  status      String   @default("completed") // Track scan status
+  shop        Shop     @relation(fields: [shopId], references: [id])
 
-  @@unique([shopId, phoneNumber])
+  @@index([shopId])
+  @@index([phoneNumber])
+  @@index([createdAt])
 }
