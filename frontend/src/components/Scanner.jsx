@@ -73,6 +73,9 @@ function Scanner() {
   const shop = shops.find((s) => s.id === shopId);
 
   useEffect(() => {
+    console.log("Scanner component loaded");
+    setShowForm(true);
+    
     // Track scan count in localStorage
     const count = localStorage.getItem(`scanCount-${shopId}`) || 0;
     setScanCount(Number(count) + 1);
