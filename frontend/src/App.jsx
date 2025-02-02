@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from "./components/Dashboard"
-// import Dashboard from './components/Dashboard';
 import Scanner from './components/Scanner';
-// import Scanner from './components/Scanner';
+
+
+
 
 function App() {
   return (
