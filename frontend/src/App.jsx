@@ -5,7 +5,7 @@ import Dashboard from "./components/Dashboard"
 import Scanner from './components/Scanner';
 // import Scanner from './components/Scanner';
 
-export default function App() {
+function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -16,3 +16,4 @@ export default function App() {
   );
 }
 
+export default App;
