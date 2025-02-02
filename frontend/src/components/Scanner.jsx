@@ -69,7 +69,7 @@ import { useParams } from 'react-router-dom';
 import PhoneForm from './PhoneForm';
 import { api } from '../utils/api';
 
-export default function Scanner() {
+function Scanner() {
   const { shopId } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -118,3 +118,4 @@ export default function Scanner() {
   );
 }
 
+export default Scanner
