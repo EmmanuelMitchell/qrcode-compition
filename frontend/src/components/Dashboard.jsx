@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Smartphone, Phone } from 'lucide-react';
 import { api } from '../utils/api';
 
-function Dashboard() {
+export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -118,4 +118,3 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
