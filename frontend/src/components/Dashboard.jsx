@@ -11,6 +11,14 @@ function Dashboard() {
 
   useEffect(() => {
     fetchScanData();
+
+     // Refresh data every 30 seconds
+     const interval = setInterval(() => {
+      fetchScanData();
+    }, 30000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
     
   }, []);
 
