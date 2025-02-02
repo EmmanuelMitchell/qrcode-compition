@@ -66,7 +66,7 @@ import { shops } from "../data/shops";
 function Scanner() {
   const { shopId } = useParams();
   const navigate = useNavigate();
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [scanCount, setScanCount] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
 
@@ -74,12 +74,24 @@ function Scanner() {
 
   useEffect(() => {
     console.log("Scanner component loaded");
+
+    // Check if shop exists
+    if (!shop) {
+      console.error("Invalid shop ID:", shopId);
+      return;
+    }
+    //  alert("Tre")
+    // Ensure the form is visible
     setShowForm(true);
-    
+    console.log("Form should be visible:", showForm);
+
     // Track scan count in localStorage
-    const count = localStorage.getItem(`scanCount-${shopId}`) || 0;
-    setScanCount(Number(count) + 1);
-    localStorage.setItem(`scanCount-${shopId}`, Number(count) + 1);
+    const count = parseInt(localStorage.getItem(`scanCount-${shopId}`)) || 0;
+    const newCount = count + 1;
+    setScanCount(newCount);
+    localStorage.setItem(`scanCount-${shopId}`, newCount);
+
+    console.log("Scan count:", newCount);
   }, [shopId]);
 
   if (!shop) {
@@ -88,24 +100,26 @@ function Scanner() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!phoneNumber.trim()) return;
+    if (!phoneNumber.trim()) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
 
     try {
-      // Store phone number in local storage
       localStorage.setItem("phoneNumber", phoneNumber.trim());
 
       // Send scan data to backend
       await fetch(`https://qrcode-compition.onrender.com/api/scans`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           shopId,
           phoneNumber: phoneNumber.trim(),
           scanCount,
         }),
       });
+
+      console.log("Scan recorded successfully");
 
       // Redirect user to store
       window.location.href = shop.url;
@@ -117,7 +131,7 @@ function Scanner() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      {showForm && (
+      {!showForm ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
             <h2 className="text-2xl font-bold mb-4">Enter Your Phone Number</h2>
@@ -139,6 +153,8 @@ function Scanner() {
             </form>
           </div>
         </div>
+      ) : (
+        <p className="text-center text-lg font-bold">Redirecting to Play Store...</p>
       )}
     </div>
   );
