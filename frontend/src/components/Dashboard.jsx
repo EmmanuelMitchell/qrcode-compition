@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { shops } from '../data/shops';
 import { Smartphone, Phone } from 'lucide-react';
-// import { API_BASE_URL } from '../utils/api';
+
+
 
 function Dashboard() {
   const [scanData, setScanData] = useState({});
@@ -25,7 +25,6 @@ function Dashboard() {
   const fetchScanData = async () => {
     try {
       const response = await fetch(`https://qrcode-compition.onrender.com/api/scans`);
-      // const response = await fetch(`http://localhost:5000/api/scans`);
       const data = await response.json();
       setScanData(data);
     } catch (error) {
@@ -40,13 +39,13 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">QR Code Scan Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8"> Maxit Shope Monitor  QR Code Scan Dashboard</h1>
         
         {/* Android Shops */}
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <Smartphone className="w-6 h-6 text-green-600" />
-            <h2 className="text-2xl font-semibold text-gray-800">Android Shopss</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">Android Shops</h2>
           </div>
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
