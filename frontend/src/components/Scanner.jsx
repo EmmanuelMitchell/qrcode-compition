@@ -1,6 +1,7 @@
 // import React, { useState, useEffect } from "react";
 // import { useNavigate, useParams } from "react-router-dom";
 // import { shops } from "../data/shops";
+// // import logo from "../assets/logo.png"; // Import company logo
 
 // function Scanner() {
 //   const { shopId } = useParams();
@@ -9,6 +10,7 @@
 //   const [phoneNumber, setPhoneNumber] = useState("");
 //   const [error, setError] = useState("");
 //   const [scanCount, setScanCount] = useState(0);
+//   const [ipAddress, setIpAddress] = useState("");
   
 //   const shop = shops.find((s) => s.id === shopId);
 
@@ -24,27 +26,30 @@
 //     setScanCount(newCount);
 //     localStorage.setItem(`scanCount-${shopId}`, newCount);
 //     console.log("Scan count:", newCount);
+
+//     // Fetch IP address
+//     fetch("https://api64.ipify.org?format=json")
+//       .then(response => response.json())
+//       .then(data => setIpAddress(data.ip))
+//       .catch(error => console.error("Error fetching IP address:", error));
 //   }, [shopId, shop]);
 
 //   const handlePhoneNumberChange = (e) => {
-//     const value = e.target.value;
-//     // Only allow digits
-//     if (value === '' || /^\d+$/.test(value)) {
+//     const value = e.target.value.replace(/\D/g, "");
+//     if (value.length === 9) {
 //       setPhoneNumber(value);
 //       setError("");
+//     } else {
+//       setPhoneNumber(value);
+//       setError("Phone number must be exactly 9 digits.");
 //     }
 //   };
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
     
-//     if (!phoneNumber.trim()) {
-//       setError("Please enter a valid phone number.");
-//       return;
-//     }
-
-//     if (!/^\d+$/.test(phoneNumber)) {
-//       setError("Please enter numbers only.");
+//     if (phoneNumber.length !== 9) {
+//       setError("Phone number must be exactly 9 digits.");
 //       return;
 //     }
 
@@ -60,6 +65,7 @@
 //           shopId,
 //           phoneNumber: phoneNumber.trim(),
 //           scanCount,
+//           ipAddress,
 //         }),
 //       });
 
@@ -90,32 +96,33 @@
 
 //   return (
 //     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-//       <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+//       <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
+//         <img src="/maxit.png" alt="Company Logo" className="mx-auto mb-4 w-20" />
 //         {error && (
 //           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
 //             <p className="text-red-600 text-sm">{error}</p>
 //           </div>
 //         )}
-//         <h2 className="text-2xl font-bold mb-6 text-center">Enter Your Phone Number</h2>
+//         <h2 className="text-2xl font-bold mb-6 text-orange-500 ">Enter Your Phone Number</h2>
+//         <p className="text-sm text-gray-600 mb-4">Please enter a valid phone number to download the Maxit app. Your number will be tracked to verify downloads.</p>
 //         <form onSubmit={handleSubmit} className="space-y-4">
 //           <div>
 //             <input
 //               type="tel"
 //               inputMode="numeric"
-//               pattern="[0-9]*"
 //               value={phoneNumber}
 //               onChange={handlePhoneNumberChange}
-//               placeholder="Enter phone number"
+//               placeholder="Enter 9-digit phone number"
 //               className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
 //               required
 //             />
 //           </div>
 //           <button
 //             type="submit"
-//             disabled={isLoading}
-//             className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+//             disabled={isLoading || phoneNumber.length !== 9}
+//             className="w-full bg-black text-orange-500 py-3 px-4 rounded hover:bg-orange-500 hover:text-black transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 //           >
-//             {isLoading ? "Submitting..." : "Submit"}
+//             {isLoading ? "Submitting..." : "Download Maxit App"}
 //           </button>
 //         </form>
 //       </div>
@@ -128,7 +135,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { shops } from "../data/shops";
-// import logo from "../assets/logo.png"; // Import company logo
 
 function Scanner() {
   const { shopId } = useParams();
@@ -138,8 +144,15 @@ function Scanner() {
   const [error, setError] = useState("");
   const [scanCount, setScanCount] = useState(0);
   const [ipAddress, setIpAddress] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   
   const shop = shops.find((s) => s.id === shopId);
+
+  const getStoreName = (url) => {
+    if (url.includes('play.google.com')) return 'Google Play Store';
+    if (url.includes('apps.apple.com')) return 'Apple App Store';
+    return 'app store';
+  };
 
   useEffect(() => {
     console.log("Scanner component loaded");
@@ -154,7 +167,6 @@ function Scanner() {
     localStorage.setItem(`scanCount-${shopId}`, newCount);
     console.log("Scan count:", newCount);
 
-    // Fetch IP address
     fetch("https://api64.ipify.org?format=json")
       .then(response => response.json())
       .then(data => setIpAddress(data.ip))
@@ -205,11 +217,18 @@ function Scanner() {
       }
 
       console.log("Scan recorded successfully");
-      window.location.href = shop.url;
+      setRedirecting(true);
+      // Add a small delay to show the redirect message
+      setTimeout(() => {
+        window.location.href = shop.url;
+      }, 2000);
     } catch (error) {
       console.error("Failed to record scan:", error.message);
       setIsLoading(false);
-      window.location.href = shop.url;
+      setRedirecting(true);
+      setTimeout(() => {
+        window.location.href = shop.url;
+      }, 2000);
     }
   };
 
@@ -230,32 +249,43 @@ function Scanner() {
             <p className="text-red-600 text-sm">{error}</p>
           </div>
         )}
-        <h2 className="text-2xl font-bold mb-6 text-orange-500 ">Enter Your Phone Number</h2>
-        <p className="text-sm text-gray-600 mb-4">Please enter a valid phone number to download the Maxit app. Your number will be tracked to verify downloads.</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              type="tel"
-              inputMode="numeric"
-              value={phoneNumber}
-              onChange={handlePhoneNumberChange}
-              placeholder="Enter 9-digit phone number"
-              className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              required
-            />
+        {redirecting ? (
+          <div className="text-center">
+            <div className="animate-pulse mb-4">
+              <div className="h-12 w-12 mx-auto border-t-2 border-b-2 border-orange-500 rounded-full animate-spin"></div>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">Redirecting you to {getStoreName(shop.url)}</h2>
+            <p className="text-gray-600">Please wait while we take you to download the Maxit app...</p>
           </div>
-          <button
-            type="submit"
-            disabled={isLoading || phoneNumber.length !== 9}
-            className="w-full bg-black text-orange-500 py-3 px-4 rounded hover:bg-orange-500 hover:text-black transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Submitting..." : "Download Maxit App"}
-          </button>
-        </form>
+        ) : (
+          <>
+            <h2 className="text-2xl font-bold mb-6 text-orange-500">Enter Your Phone Number</h2>
+            <p className="text-sm text-gray-600 mb-4">Please enter a valid phone number to download the Maxit app. Your number will be tracked to verify downloads.</p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={phoneNumber}
+                  onChange={handlePhoneNumberChange}
+                  placeholder="Enter 9-digit phone number"
+                  className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading || phoneNumber.length !== 9}
+                className="w-full bg-black text-orange-500 py-3 px-4 rounded hover:bg-orange-500 hover:text-black transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Submitting..." : "Download Maxit App"}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 export default Scanner;
-
