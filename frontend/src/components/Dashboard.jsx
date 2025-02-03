@@ -227,13 +227,10 @@
 
 // export default Dashboard;
 
-
-
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { jsPDF } from 'jspdf';
 import { shops } from '../data/shops';
-import { Smartphone, Phone, TrendingUp } from 'lucide-react';
+import { Smartphone, Phone, TrendingUp, Download } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'maxitScanData';
 const LAST_UPDATE_KEY = 'maxitLastUpdate';
@@ -249,24 +246,6 @@ const TopPerformers = ({ scanData, title }) => {
     .slice(0, 5);
   };
 
-  const exportToExcel = () => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(getShopPerformance());
-    XLSX.utils.book_append_sheet(wb, ws, 'Top Performers');
-    XLSX.writeFile(wb, 'top_performers.xlsx');
-  };
-
-  // const exportToPDF = () => {
-  //   const doc = new jsPDF();
-  //   const tableColumn = ['Shop', 'Scans', 'Phone Numbers'];
-  //   const tableRows = getShopPerformance().map(shop => [
-  //     shop.name, shop.scans, shop.phoneNumbers
-  //   ]);
-
-  //   doc.autoTable(tableColumn, tableRows, { startY: 20 });
-  //   doc.save('top_performers.pdf');
-  // };
-
   return (
     <div className="bg-white rounded-lg shadow-md mb-8 p-6">
       <div className="flex items-center gap-2 mb-4">
@@ -274,21 +253,6 @@ const TopPerformers = ({ scanData, title }) => {
         <h3 className="text-lg font-semibold text-gray-900">
           Top Performing Shops - {title}
         </h3>
-      </div>
-
-      <div className="mb-8 flex space-x-4">
-        <button
-          onClick={exportToExcel}
-          className="px-4 py-2 rounded-lg bg-green-500 text-white"
-        >
-          Export to Excel
-        </button>
-        {/* <button
-          onClick={exportToPDF}
-          className="px-4 py-2 rounded-lg bg-blue-500 text-white"
-        >
-          Export to PDF
-        </button> */}
       </div>
 
       <div className="bg-black/5 rounded-lg p-4">
@@ -323,7 +287,27 @@ function Dashboard() {
   const androidShops = shops.filter(shop => shop.platform === 'android');
   const iphoneShops = shops.filter(shop => shop.platform === 'iphone');
 
-  // Load data from localStorage on initial mount
+  
+
+  const exportToCSV = (data, filename) => {
+    const exportData = data.map(shop => ({
+      Shop: shop.name,
+      Scans: getShopData(shop.id).count,
+      'Phone Numbers': getShopData(shop.id).phoneNumbers.join(', ') || 'No numbers'
+    
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const csv = XLSX.utils.sheet_to_csv(ws);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${filename}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
     const storedLastUpdate = localStorage.getItem(LAST_UPDATE_KEY);
@@ -334,7 +318,6 @@ function Dashboard() {
     }
   }, []);
 
-  // Save data to localStorage whenever it changes
   useEffect(() => {
     if (Object.keys(scanData).length > 0) {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(scanData));
@@ -356,11 +339,9 @@ function Dashboard() {
     } catch (error) {
       console.error('Failed to fetch scan data:', error);
       setIsOffline(true);
-      // Keep using the existing data from state/localStorage
     }
   };
 
-  // Set up polling
   useEffect(() => {
     fetchScanData();
     const interval = setInterval(() => {
@@ -423,9 +404,20 @@ function Dashboard() {
         </div>
 
         <div className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <Smartphone className="w-6 h-6 text-orange-500" />
-            <h2 className="text-2xl font-semibold text-gray-900">Android Shops</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Smartphone className="w-6 h-6 text-orange-500" />
+              <h2 className="text-2xl font-semibold text-gray-900">Android Shops</h2>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => exportToCSV(androidShops, 'android-shops')}
+                className="flex items-center px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </button>
+            </div>
           </div>
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
@@ -455,9 +447,21 @@ function Dashboard() {
         </div>
 
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <Phone className="w-6 h-6 text-orange-500" />
-            <h2 className="text-2xl font-semibold text-gray-900">iPhone Shops</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Phone className="w-6 h-6 text-orange-500" />
+              <h2 className="text-2xl font-semibold text-gray-900">iPhone Shops</h2>
+            </div>
+            <div className="flex gap-2">
+             
+              <button
+                onClick={() => exportToCSV(iphoneShops, 'iphone-shops')}
+                className="flex items-center px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </button>
+            </div>
           </div>
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
