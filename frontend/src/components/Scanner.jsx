@@ -128,6 +128,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { shops } from "../data/shops";
+// import logo from "../assets/logo.png"; // Import company logo
 
 function Scanner() {
   const { shopId } = useParams();
@@ -161,20 +162,21 @@ function Scanner() {
   }, [shopId, shop]);
 
   const handlePhoneNumberChange = (e) => {
-    const value = e.target.value;
-    if (/^\+\d{3}\d{6,}$/.test(value)) {
+    const value = e.target.value.replace(/\D/g, "");
+    if (value.length === 9) {
       setPhoneNumber(value);
       setError("");
     } else {
-      setError("Invalid phone number format. Example: +23278009090");
+      setPhoneNumber(value);
+      setError("Phone number must be exactly 9 digits.");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!/^\+\d{3}\d{6,}$/.test(phoneNumber)) {
-      setError("Invalid phone number format. Example: +23278009090");
+    if (phoneNumber.length !== 9) {
+      setError("Phone number must be exactly 9 digits.");
       return;
     }
 
@@ -221,32 +223,33 @@ function Scanner() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+      <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
+        <img src="/maxit.png" alt="Company Logo" className="mx-auto mb-4 w-20" />
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
             <p className="text-red-600 text-sm">{error}</p>
           </div>
         )}
-        <h2 className="text-2xl font-bold mb-6 text-center">Enter Your Phone Number</h2>
+        <h2 className="text-2xl font-bold mb-6 text-orange-500 ">Enter Your Phone Number</h2>
+        <p className="text-sm text-gray-600 mb-4">Please enter a valid phone number to download the Maxit app. Your number will be tracked to verify downloads.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
               type="tel"
               inputMode="numeric"
-              pattern="\+\d{3}\d{6,}"
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
-              placeholder="Example: +232"
+              placeholder="Enter 9-digit phone number"
               className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               required
             />
           </div>
           <button
             type="submit"
-            disabled={isLoading || !/^\+\d{3}\d{6,}$/.test(phoneNumber)}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading || phoneNumber.length !== 9}
+            className="w-full bg-black text-orange-500 py-3 px-4 rounded hover:bg-orange-500 hover:text-black transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Submitting..." : "Submit"}
+            {isLoading ? "Submitting..." : "Download Maxit App"}
           </button>
         </form>
       </div>
@@ -255,3 +258,4 @@ function Scanner() {
 }
 
 export default Scanner;
+
