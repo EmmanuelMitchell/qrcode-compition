@@ -82,59 +82,6 @@ app.post('/api/scans', async (req, res) => {
 
 
 
-// app.post('/api/scans', async (req, res) => {
-//   const { shopId, phoneNumber } = req.body;
-//   console.log("Server waiting", req.body)
-//   if (!shopId || !phoneNumber) {
-//     return res.status(400).json({ error: 'Missing shopId or phoneNumber' });
-//   }
-
-//   try {
-//     // Check for existing scan
-//     const existingScan = await prisma.scan.findFirst({
-//       where: {
-//         AND: [
-//           { shopId },
-//           { phoneNumber }
-//         ]
-//       },
-//       // include: {
-//       //   shop: {
-//       //     select: {
-//       //       name: true
-//       //     }
-//       //   }
-//       // }
-//     });
-
-//     if (existingScan) {
-//       const shopName = existingScan.shop.name;
-//       return res.json({
-//         success: false,
-//         message: `This phone number has already been used to scan the ${shopName} shop`
-//       });
-//     }
-
-//     // Create new scan
-//     const scan = await prisma.scan.create({
-//       data: {
-//         shopId,
-//         phoneNumber,
-//         status: 'completed'
-//       }
-//     });
-
-//     res.json({
-//       success: true,
-//       message: 'Scan recorded successfully',
-//       scan
-//     });
-
-//   } catch (error) {
-//     console.error("Insert error:", error);
-//     res.status(500).json({ error: 'Failed to record scan' });
-//   }
-// });
 
 
 
