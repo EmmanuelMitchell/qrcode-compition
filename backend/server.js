@@ -11,72 +11,54 @@ app.use(express.json());
 // Get scan data for all shops
 app.get('/api/scans', async (req, res) => {
   try {
-    // Get all shops with their scans
-    const shopsWithScans = await prisma.shop.findMany({
-      include: {
-        scans: {
-          select: {
-            phoneNumber: true,
-          },
-        },
+    const scans = await prisma.scan.findMany({
+      orderBy: {
+        createdAt: 'desc', // Newest scans appear first
       },
     });
 
-    // Transform the data into the desired format
-    const result = shopsWithScans.reduce((acc, shop) => {
-      acc[shop.id] = {
-        count: shop.scans.length,
-        phoneNumbers: [...new Set(shop.scans.map(scan => scan.phoneNumber))], // Remove duplicates
-        name: shop.name,
-        platform: shop.platform,
-        url: shop.url
-      };
-      return acc;
-    }, {});
-
-    res.json(result);
+    res.json({
+      success: true,
+      scans,
+    });
   } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({ error: 'Failed to fetch scan data' });
+    console.error("Fetch error:", error);
+    res.status(500).json({ error: 'Failed to fetch scans' });
   }
 });
 
-// // Record new scan
-
 app.post('/api/scans', async (req, res) => {
   const { shopId, phoneNumber } = req.body;
+  console.log("Server waiting", req.body);
 
   if (!shopId || !phoneNumber) {
     return res.status(400).json({ error: 'Missing shopId or phoneNumber' });
   }
 
   try {
-    // Check for existing scan
+    // Get the most recent scan for this shop and phone number
     const existingScan = await prisma.scan.findFirst({
       where: {
-        AND: [
-          { shopId },
-          { phoneNumber }
-        ]
+        AND: [{ shopId }, { phoneNumber }]
       },
-      include: {
-        shop: {
-          select: {
-            name: true
-          }
-        }
-      }
+      orderBy: { createdAt: 'desc' } // Order by most recent first
     });
 
     if (existingScan) {
-      const shopName = existingScan.shop.name;
-      return res.json({
-        success: false,
-        message: `This phone number has already been used to scan the ${shopName} shop`
-      });
+      const lastScanTime = new Date(existingScan.createdAt);
+      const currentTime = new Date();
+      const timeDifference = (currentTime - lastScanTime) / (1000 * 60); // Convert to minutes
+
+      if (timeDifference < 60) {
+        const remainingMinutes = Math.ceil(60 - timeDifference);
+        return res.json({
+          success: false,
+          message: `You can scan again in ${remainingMinutes} minutes.`
+        });
+      }
     }
 
-    // Create new scan
+    // Create a new scan
     const scan = await prisma.scan.create({
       data: {
         shopId,
@@ -96,6 +78,64 @@ app.post('/api/scans', async (req, res) => {
     res.status(500).json({ error: 'Failed to record scan' });
   }
 });
+
+
+
+
+// app.post('/api/scans', async (req, res) => {
+//   const { shopId, phoneNumber } = req.body;
+//   console.log("Server waiting", req.body)
+//   if (!shopId || !phoneNumber) {
+//     return res.status(400).json({ error: 'Missing shopId or phoneNumber' });
+//   }
+
+//   try {
+//     // Check for existing scan
+//     const existingScan = await prisma.scan.findFirst({
+//       where: {
+//         AND: [
+//           { shopId },
+//           { phoneNumber }
+//         ]
+//       },
+//       // include: {
+//       //   shop: {
+//       //     select: {
+//       //       name: true
+//       //     }
+//       //   }
+//       // }
+//     });
+
+//     if (existingScan) {
+//       const shopName = existingScan.shop.name;
+//       return res.json({
+//         success: false,
+//         message: `This phone number has already been used to scan the ${shopName} shop`
+//       });
+//     }
+
+//     // Create new scan
+//     const scan = await prisma.scan.create({
+//       data: {
+//         shopId,
+//         phoneNumber,
+//         status: 'completed'
+//       }
+//     });
+
+//     res.json({
+//       success: true,
+//       message: 'Scan recorded successfully',
+//       scan
+//     });
+
+//   } catch (error) {
+//     console.error("Insert error:", error);
+//     res.status(500).json({ error: 'Failed to record scan' });
+//   }
+// });
+
 
 
 

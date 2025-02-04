@@ -64,28 +64,37 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Shop {
-  id        String   @id // Format: "{name}-{platform}" (e.g., "bo-android")
-  name      String   // Display name (e.g., "Bo")
-  platform  String   // Either "android" or "iphone"
-  url       String   // Store URL for redirecting after scan
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  scans     Scan[]
+// model Shop {
+//   id        String   @id // Format: "{name}-{platform}" (e.g., "bo-android")
+//   name      String   // Display name (e.g., "Bo")
+//   platform  String   // Either "android" or "iphone"
+//   url       String   // Store URL for redirecting after scan
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   scans     Scan[]
 
-  @@index([name, platform])
-  @@unique([name, platform])
-}
+//   @@index([name, platform])
+//   @@unique([name, platform])
+// }
+
+// model Scan {
+//   id          Int      @id @default(autoincrement())
+//   shopeName    String
+//   phoneNumber String
+//   createdAt   DateTime @default(now())
+//   status      String   @default("completed") // Track scan status
+//   shop        Shop     @relation(fields: [shopeName], references: [id])
+
+//   @@index([shopeName])
+//   @@index([phoneNumber])
+//   @@index([createdAt])
+// }
+
 
 model Scan {
-  id          Int      @id @default(autoincrement())
-  shopId      String
-  phoneNumber String
-  createdAt   DateTime @default(now())
-  status      String   @default("completed") // Track scan status
-  shop        Shop     @relation(fields: [shopId], references: [id])
-
-  @@index([shopId])
-  @@index([phoneNumber])
-  @@index([createdAt])
+  id          Int      @id @default(autoincrement()) // Unique scan ID
+  shopId      String   // The shop identifier
+  phoneNumber String   // Phone number used for scanning
+  status      String   @default("completed") // Default status
+  createdAt   DateTime @default(now()) // Timestamp when scan was created
 }

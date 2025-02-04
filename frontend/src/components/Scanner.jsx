@@ -82,13 +82,12 @@ function Scanner() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           shopId,
-          phoneNumber: phoneNumber.trim(),
-          scanCount,
-          ipAddress,
+          phoneNumber,
         }),
       });
 
       const data = await response.json();
+      console.log("post data", data)
 
       if (!data.success) {
         setError(data.message);
