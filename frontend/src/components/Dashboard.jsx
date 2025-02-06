@@ -297,7 +297,7 @@ function Dashboard() {
             </div>
             {Object.entries(scanAnalysis.weeklyScansByShop).map(([shopId, weekData]) => (
               <div key={shopId} className="mb-2 p-3 bg-gray-50 rounded-lg">
-                <span className="font-bold text-gray-800">{shopId}:</span>{' '}
+                <span className="font-bold text-gray-800 capitalize">{shopId}:</span>{' '}
                 <span className="text-orange-600 font-semibold">{weekData.count} scans</span>{' '}
                 in Week {weekData.week}
               </div>
@@ -313,7 +313,7 @@ function Dashboard() {
             </div>
             {Object.entries(scanAnalysis.monthlyScansByShop).map(([shopId, monthData]) => (
               <div key={shopId} className="mb-2 p-3 bg-gray-50 rounded-lg">
-                <span className="font-bold text-gray-800">{shopId}:</span>{' '}
+                <span className="font-bold text-gray-800 capitalize">{shopId}:</span>{' '}
                 <span className="text-orange-600 font-semibold">{monthData.count} scans</span>{' '}
                 in {monthData.month}
               </div>
@@ -344,9 +344,9 @@ function Dashboard() {
               <tbody className="divide-y divide-gray-200">
                 {currentScans.map(scan => (
                   <tr key={scan.id} className="hover:bg-orange-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{dayjs(scan.createdAt).format('MMMM D, YYYY h:mm A')}</td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{scan.shopId}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{scan.phoneNumber || 'No Number'}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900 ">{dayjs(scan.createdAt).format('MMMM D, YYYY h:mm A')}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900 capitalize">{scan.shopId}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 ">{scan.phoneNumber || 'No Number'}</td>
                   </tr>
                 ))}
               </tbody>
