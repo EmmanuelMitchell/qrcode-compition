@@ -129,6 +129,7 @@ import * as XLSX from 'xlsx';
 import { Smartphone, TrendingUp, Download, BarChart, Calendar, ChevronDown } from 'lucide-react';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { API_BASE_URL } from '../utils/api';
 dayjs.extend(weekOfYear);
 
 function Dashboard() {
@@ -156,7 +157,7 @@ function Dashboard() {
 
   const fetchScanData = async () => {
     try {
-      const response = await fetch("https://qrcode-compition.onrender.com/api/scans");
+      const response = await fetch(`${API_BASE_URL}/api/scans`);
       const data = await response.json();
       setScanData(data.scans || []);
       setTotalScans(data.scans.length);
