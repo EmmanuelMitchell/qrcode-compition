@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { shops } from "../data/shops";
+import { API_BASE_URL } from "../utils/api";
 
 function Scanner() {
   const { shopId } = useParams();
@@ -77,7 +78,7 @@ function Scanner() {
     try {
       localStorage.setItem("phoneNumber", phoneNumber.trim());
       
-      const response = await fetch(`https://qrcode-compition.onrender.com/api/scans`, {
+      const response = await fetch(`${API_BASE_URL}/api/scans`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
