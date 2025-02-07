@@ -157,7 +157,7 @@ function Dashboard() {
 
   const fetchScanData = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/scans`);
+      const response = await fetch("https://qrcode-compition.onrender.com/api/scans");
       const data = await response.json();
       setScanData(data.scans || []);
       setTotalScans(data.scans.length);
