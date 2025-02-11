@@ -59,10 +59,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+// prisma/schema.prisma
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
 
 // model Shop {
 //   id        String   @id // Format: "{name}-{platform}" (e.g., "bo-android")
