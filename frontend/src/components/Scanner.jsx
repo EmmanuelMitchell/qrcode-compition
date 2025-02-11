@@ -78,7 +78,7 @@ function Scanner() {
     try {
       localStorage.setItem("phoneNumber", phoneNumber.trim());
       
-      const response = await fetch("https://qrcode-compition.onrender.com/api/scans", {
+      const response = await fetch("https://qrcode-compition-back.vercel.app/api/scans", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
