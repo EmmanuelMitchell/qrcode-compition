@@ -129,7 +129,6 @@ import * as XLSX from 'xlsx';
 import { Smartphone, TrendingUp, Download, BarChart, Calendar, ChevronDown } from 'lucide-react';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import { API_BASE_URL } from '../utils/api';
 dayjs.extend(weekOfYear);
 
 function Dashboard() {
