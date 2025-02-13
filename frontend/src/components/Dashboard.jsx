@@ -231,7 +231,7 @@ function Dashboard() {
             <button 
               onClick={prevPage} 
               disabled={currentPage === 1} 
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
+              className="px-4 py-2 rounded-xl bg-black text-gray-300  disabled:opacity-40"
             >
               Previous
             </button>
@@ -239,7 +239,7 @@ function Dashboard() {
             <button 
               onClick={nextPage} 
               disabled={indexOfLastScan >= scanData.length} 
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
+              className="px-4 py-2 rounded-xl bg-black text-gray-300  disabled:opacity-40"
             >
               Next
             </button>
