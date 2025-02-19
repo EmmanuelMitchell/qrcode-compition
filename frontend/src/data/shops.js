@@ -1,22 +1,3 @@
-// export const shops = [
-//     { id: 'bo-android', name: 'Bo', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'kenema-android', name: 'Kenema', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'hq-android', name: 'HQ', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'lungi-android', name: 'Lungi', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'waterloo-android', name: 'Waterloo', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'wellington-android', name: 'Wellington', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'kono-android', name: 'Kono', url: 'https://play.google.com/store', platform: 'android' },
-//     { id: 'makeni-android', name: 'Makeni', url: 'https://play.google.com/store', platform: 'android' },
-    
-//     { id: 'bo-iphone', name: 'Bo', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'kenema-iphone', name: 'Kenema', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'hq-iphone', name: 'HQ', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'lungi-iphone', name: 'Lungi', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'waterloo-iphone', name: 'Waterloo', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'wellington-iphone', name: 'Wellington', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'kono-iphone', name: 'Kono', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//     { id: 'makeni-iphone', name: 'Makeni', url: 'https://apps.apple.com/store', platform: 'iphone' },
-//   ];
 
 export const shops = [
   { id: 'bo-android', name: 'Bo', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
@@ -39,3 +20,62 @@ export const shops = [
   { id: 'makeni-iphone', name: 'Makeni', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
   { id: 'flagship-iphone', name: 'Flagship', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
 ];
+
+
+
+
+
+export const teams = [
+  { id: 'waterloo-android', name: 'Waterloo', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'rokel-android', name: 'Rokel', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'jui-android', name: 'Jui', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'calaba-town-android', name: 'Calaba Town', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'wellington-android', name: 'Wellington', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'portee-android', name: 'Portee', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'shell-android', name: 'Shell', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'ferry-junction-android', name: 'Ferry Junction', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'upgun-android', name: 'Upgun', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'eastern-police-android', name: 'Eastern Police', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'rawdon-street-android', name: 'Rawdon Street', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'st-john-android', name: 'St. John', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'krootown-road-android', name: 'Krootown Road', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'model-new-road-android', name: 'Model New Road', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'congo-cross-android', name: 'Congo Cross', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'aberdeen-android', name: 'Aberdeen', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'lumley-android', name: 'Lumley', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'wilberforce-android', name: 'Wilberforce', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'funkia-android', name: 'Funkia', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'metchem-android', name: 'Metchem', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'south-android', name: 'South', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'east1-android', name: 'East 1 (Kenema)', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'east2-android', name: 'East 2 (Kono)', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'north-west-android', name: 'North West', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+  { id: 'north-android', name: 'North', url: 'https://play.google.com/store/apps/details?id=com.orange.myorange.osl', platform: 'android' },
+
+  { id: 'waterloo-iphone', name: 'Waterloo', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'rokel-iphone', name: 'Rokel', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'jui-iphone', name: 'Jui', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'calaba-town-iphone', name: 'Calaba Town', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'wellington-iphone', name: 'Wellington', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'portee-iphone', name: 'Portee', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'shell-iphone', name: 'Shell', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'ferry-junction-iphone', name: 'Ferry Junction', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'upgun-iphone', name: 'Upgun', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'eastern-police-iphone', name: 'Eastern Police', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'rawdon-street-iphone', name: 'Rawdon Street', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'st-john-iphone', name: 'St. John', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'krootown-road-iphone', name: 'Krootown Road', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'model-new-road-iphone', name: 'Model New Road', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'congo-cross-iphone', name: 'Congo Cross', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'aberdeen-iphone', name: 'Aberdeen', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'lumley-iphone', name: 'Lumley', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'wilberforce-iphone', name: 'Wilberforce', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'funkia-iphone', name: 'Funkia', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'metchem-iphone', name: 'Metchem', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'south-iphone', name: 'South', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'east1-iphone', name: 'East 1 (Kenema)', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'east2-iphone', name: 'East 2 (Kono)', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'north-west-iphone', name: 'North West', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+  { id: 'north-iphone', name: 'North', url: 'https://itunes.apple.com/fr/app/id6443607903', platform: 'iphone' },
+];
+

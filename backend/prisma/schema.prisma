@@ -26,10 +26,12 @@ model Scan {
 }
 
 
-// model Shops {
-//   id          Int      @id @default(autoincrement()) // Unique scan ID
-//   shopId      String   // The shop identifier
-//   phoneNumber String   // Phone number used for scanning
-//   status      String   @default("completed") // Default status
-//   createdAt   DateTime @default(now()) // Timestamp when scan was created
-// }
+model TeamScan {
+  id          Int      @id @default(autoincrement()) // Unique scan ID
+  teamId      String   // The team identifier
+  phoneNumber String   // Phone number used for scanning
+  status      String   @default("completed") // Default status
+  createdAt   DateTime @default(now()) // Timestamp when scan was created
+  agentName   String   // Name of the agent who performed the scan
+}
+
