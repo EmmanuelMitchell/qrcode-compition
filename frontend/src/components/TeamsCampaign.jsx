@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download } from 'lucide-react';
+import { BarChart3, Download, Trophy, User } from 'lucide-react';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 
@@ -64,8 +64,7 @@ function TeamsCampaign() {
 
   const exportTeamDataToCSV = () => {
     const exportData = teamScans.map(scan => ({
-      'Team': scan.teamName,
-      'Shop Name': scan.shopId,
+      'Team Name': scan.teamId,
       'Agent Name': scan.agentName,
       'Phone Number': scan.phoneNumber || 'No Number',
       'Scan Date': dayjs(scan.createdAt).format('MMMM D, YYYY h:mm A')
@@ -92,26 +91,36 @@ function TeamsCampaign() {
         </button>
       </div>
 
-      <div className="flex justify-between gap-5 mb-4 ">
-        {teamAnalysis.topTeam && (
-          <div className="p-6 bg-blue-500 text-white rounded-lg shadow-lg w-1/3">
+    
+      <div className="flex justify-between gap-5 mb-4">
+      {teamAnalysis.topTeam && (
+        <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
+          <Trophy className="text-orange-500 w-8 h-8" />
+          <div>
             <h3 className="text-xl font-bold">Top Team: {teamAnalysis.topTeam.teamId}</h3>
             <p className="text-lg">Scans: {teamAnalysis.topTeam.count}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        {teamAnalysis.topAgent && (
-          <div className="p-6 bg-green-500 text-white rounded-lg shadow-lg w-1/3">
+      {teamAnalysis.topAgent && (
+        <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
+          <User className="text-orange-500 w-8 h-8" />
+          <div>
             <h3 className="text-xl font-bold">Top Agent: {teamAnalysis.topAgent.agentName}</h3>
             <p className="text-lg">Scans: {teamAnalysis.topAgent.count}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        <div className="p-6 bg-gray-500 text-white rounded-lg shadow-lg w-1/3">
+      <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
+        <BarChart3 className="text-orange-500 w-8 h-8" />
+        <div>
           <h3 className="text-xl font-bold">Total Scans</h3>
           <p className="text-lg">{teamAnalysis.totalScans}</p>
         </div>
       </div>
+    </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
@@ -137,9 +146,9 @@ function TeamsCampaign() {
       </div>
 
       <div className="flex justify-between mt-4">
-        <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)} className="px-4 py-2 mx-2 bg-gray-200 rounded disabled:opacity-50">Previous</button>
+        <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)} className="px-4 py-2 mx-2 bg-black text-white rounded disabled:opacity-50">Previous</button>
         <span className="px-4 py-2">Page {currentPage} of {totalPages}</span>
-        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)} className="px-4 py-2 mx-2 bg-gray-200 rounded disabled:opacity-50">Next</button>
+        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)} className="px-4 py-2 mx-2 bg-black text-white rounded disabled:opacity-50">Next</button>
       </div>
     </div>
   );
