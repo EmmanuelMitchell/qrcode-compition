@@ -29,7 +29,7 @@ function TeamsCampaign() {
   // }, []);
   useEffect(() => {
     const fetchData = () => {
-      fetch('http://localhost:5000/api/team-scans')
+      fetch('https://qrcode-compition-back.vercel.app/api/team-scans')
         .then(response => response.json())
         .then(data => {
           const enrichedData = data.teamScans.map(scan => ({

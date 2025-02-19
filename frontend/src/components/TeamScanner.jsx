@@ -63,7 +63,7 @@ function TeamScanner() {
     }
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/team-scans", {
+      const response = await fetch("https://qrcode-compition-back.vercel.app/api/team-scans", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamId, phoneNumber, agentName }),
