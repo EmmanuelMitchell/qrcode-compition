@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { teams } from "../data/shops";
-// import { teams } from "../data/teams";
 
 function TeamScanner() {
   const { teamId } = useParams();
@@ -15,8 +14,13 @@ function TeamScanner() {
   const team = teams.find((t) => t.id === teamId);
   const validPrefixes = ["072", "073", "074", "075", "076", "078", "079"];
 
+  const getStoreName = (url) => {
+    if (url.includes("play.google.com")) return "Google Play Store";
+    if (url.includes("apps.apple.com")) return "Apple App Store";
+    return "app store";
+  };
+
   useEffect(() => {
-    console.log("TeamScanner component loaded");
     if (!team) {
       console.error("Invalid team ID:", teamId);
       return;
@@ -62,11 +66,7 @@ function TeamScanner() {
       const response = await fetch("http://localhost:5000/api/team-scans", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          teamId,
-          phoneNumber,
-          agentName,
-        }),
+        body: JSON.stringify({ teamId, phoneNumber, agentName }),
       });
       const data = await response.json();
       if (!data.success) {
@@ -119,6 +119,11 @@ function TeamScanner() {
             {isLoading ? "Submitting..." : "Download Maxit App"}
           </button>
         </form>
+        {redirecting && (
+          <div className="mt-4 text-gray-600">
+            <p>Redirecting you to {getStoreName(team.url)}...</p>
+          </div>
+        )}
       </div>
     </div>
   );
