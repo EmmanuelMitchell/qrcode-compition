@@ -14,18 +14,37 @@ function TeamsCampaign() {
   const [currentPage, setCurrentPage] = useState(1);
   const scansPerPage = 5;
 
+  // useEffect(() => {
+  //   fetch('http://localhost:5000/api/team-scans')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       const enrichedData = data.teamScans.map(scan => ({
+  //         ...scan,
+  //         teamName: assignTeam(scan.teamId),
+  //       }));
+  //       setTeamScans(enrichedData);
+  //       analyzeTeamData(enrichedData);
+  //     })
+  //     .catch(error => console.error('Error fetching data:', error));
+  // }, []);
   useEffect(() => {
-    fetch('http://localhost:5000/api/team-scans')
-      .then(response => response.json())
-      .then(data => {
-        const enrichedData = data.teamScans.map(scan => ({
-          ...scan,
-          teamName: assignTeam(scan.teamId),
-        }));
-        setTeamScans(enrichedData);
-        analyzeTeamData(enrichedData);
-      })
-      .catch(error => console.error('Error fetching data:', error));
+    const fetchData = () => {
+      fetch('http://localhost:5000/api/team-scans')
+        .then(response => response.json())
+        .then(data => {
+          const enrichedData = data.teamScans.map(scan => ({
+            ...scan,
+            teamName: assignTeam(scan.teamId),
+          }));
+          setTeamScans(enrichedData);
+          analyzeTeamData(enrichedData);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   const assignTeam = (teamId) => {
