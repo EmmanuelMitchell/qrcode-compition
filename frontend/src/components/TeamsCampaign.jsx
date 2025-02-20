@@ -14,19 +14,7 @@ function TeamsCampaign() {
   const [currentPage, setCurrentPage] = useState(1);
   const scansPerPage = 10;
 
-  // useEffect(() => {
-  //   fetch('http://localhost:5000/api/team-scans')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       const enrichedData = data.teamScans.map(scan => ({
-  //         ...scan,
-  //         teamName: assignTeam(scan.teamId),
-  //       }));
-  //       setTeamScans(enrichedData);
-  //       analyzeTeamData(enrichedData);
-  //     })
-  //     .catch(error => console.error('Error fetching data:', error));
-  // }, []);
+ 
   useEffect(() => {
     const fetchData = () => {
       fetch('https://qrcode-compition-back.vercel.app/api/team-scans')
