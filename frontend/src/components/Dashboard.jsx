@@ -4,7 +4,8 @@ import { Smartphone, TrendingUp, Download, BarChart, Calendar, ChevronDown, User
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import TeamsCampaign from './TeamsCampaign'; // Import the new component
-// import TeamsAnalysis from './TeamsAnalysis';
+import TeamsAnalysis from './TeamsAnalysis';
+import TeamsLeaderboard from './TeamsAnalysis';
 dayjs.extend(weekOfYear);
 
 function Dashboard() {
@@ -308,7 +309,7 @@ function Dashboard() {
               </div>
             </button>
 
-            {/* <button
+            <button
               onClick={() => setActiveTab('team-analysis')}
               className={`py-4 px-6 text-center font-medium text-sm cursor-pointer border-b-2 transition duration-200 
                 ${activeTab === 'team-analysis' 
@@ -320,7 +321,7 @@ function Dashboard() {
                 <Users className="w-5 h-5" />
                 <span>Teams Analysis</span>
               </div>
-            </button> */}
+            </button>
           </nav>
         </div>
 
@@ -329,7 +330,8 @@ function Dashboard() {
           {activeTab === 'shop-campaign' && renderShopCampaignTab()}
           {activeTab === 'analysis' && renderAnalysisTab()}
           {activeTab === 'teams-campaign' && <TeamsCampaign  />}
-          {/* {activeTab === 'team-analysis' && <TeamsAnalysis  />} */}
+          {/* {activeTab === 'team-analysis' && <TeamsAnalysis  />}  */}
+          {activeTab === 'team-analysis' && <TeamsLeaderboard  />} 
         </div>
       </div>
     </div>
