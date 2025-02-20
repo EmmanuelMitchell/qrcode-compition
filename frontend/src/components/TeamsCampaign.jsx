@@ -12,7 +12,7 @@ function TeamsCampaign() {
     totalScans: 0
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const scansPerPage = 5;
+  const scansPerPage = 10;
 
   // useEffect(() => {
   //   fetch('http://localhost:5000/api/team-scans')
