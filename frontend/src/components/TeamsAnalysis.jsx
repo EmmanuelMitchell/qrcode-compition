@@ -12,7 +12,7 @@ function TeamsLeaderboard() {
   }, []);
 
   useEffect(() => {
-    if (scanData.length > 0) {
+    if (scanData.length) {
       generateLeaderboards();
     }
   }, [scanData]);
@@ -22,7 +22,6 @@ function TeamsLeaderboard() {
     try {
       const response = await fetch("https://qrcode-compition-back.vercel.app/api/team-scans");
       const data = await response.json();
-      console.log("Scan Data:", data.teamScans);
       setScanData(data.teamScans || []);
     } catch (error) {
       console.error("Failed to fetch scan data:", error);
@@ -31,134 +30,77 @@ function TeamsLeaderboard() {
     }
   };
 
+  const normalizeText = (text) => text.toLowerCase().trim().replace(/\s+/g, " ");
+  const normalizeTeamName = (team) => team.replace(/-android|-iphone/gi, "").toLowerCase();
+
   const generateLeaderboards = () => {
     const teamCounts = {};
     const agentCounts = {};
 
-    scanData.forEach((scan) => {
-      // Normalize team names by removing device suffixes
-      const normalizedTeam = scan.teamId.replace(/-android|-iphone/gi, "");
-      
-      if (!teamCounts[normalizedTeam]) {
-        teamCounts[normalizedTeam] = 0;
-      }
-      teamCounts[normalizedTeam] += 1;
+    scanData.forEach(({ teamId, agentName, userId }) => {
+      const team = normalizeTeamName(teamId);
+      teamCounts[team] = (teamCounts[team] || 0) + 1;
 
-      // Count agent scans
-      const agentKey = scan.agentName || scan.userId || "Unknown";
-      agentCounts[agentKey] = (agentCounts[agentKey] || 0) + 1;
+      const agent = normalizeText(agentName || userId || "Unknown");
+      agentCounts[agent] = (agentCounts[agent] || 0) + 1;
     });
 
-    // Sort and get top 25 teams
-    const sortedTeams = Object.entries(teamCounts)
-      .map(([id, count]) => ({ id, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 25);
+    setTeamLeaderboard(
+      Object.entries(teamCounts)
+        .map(([id, count]) => ({ id, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 25)
+    );
 
-    // Sort and get top 25 agents
-    const sortedAgents = Object.entries(agentCounts)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 25);
-
-    setTeamLeaderboard(sortedTeams);
-    setAgentLeaderboard(sortedAgents);
+    setAgentLeaderboard(
+      Object.entries(agentCounts)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 25)
+    );
   };
 
-  const getMedalColor = (index) => {
-    switch (index) {
-      case 0: return "bg-yellow-500";
-      case 1: return "bg-gray-300";
-      case 2: return "bg-amber-600";
-      default: return "bg-gray-200";
-    }
-  };
+  const getMedalColor = (index) => ["bg-yellow-500", "bg-gray-300", "bg-amber-600"][index] || "bg-gray-200";
 
-  if (isLoading) {
-    return <div className="p-6 text-center">Loading leaderboard data...</div>;
-  }
+  if (isLoading) return <div className="p-6 text-center">Loading leaderboard data...</div>;
+
+  const LeaderboardCard = ({ title, icon, leaderboard, type }) => (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className={`p-4 flex items-center ${type === "team" ? "bg-blue-600" : "bg-purple-600"}`}>
+        {icon} <h2 className="text-xl font-bold text-white ml-2">Top 25 {title}</h2>
+      </div>
+      <div className="p-4">
+        {leaderboard.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">No data available</p>
+        ) : (
+          <div className="space-y-4">
+            {leaderboard.map((item, index) => (
+              <div key={item.id || item.name} className="flex items-center p-3 bg-gray-50 rounded-lg">
+                <div className={`${getMedalColor(index)} w-8 h-8 rounded-full flex items-center justify-center mr-3 text-white font-bold`}>{index + 1}</div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      {type === "team" ? <Users className="w-5 h-5 text-blue-600 mr-2" /> : <User className="w-5 h-5 text-purple-600 mr-2" />}
+                      <span className="font-semibold text-gray-800 capitalize">{item.id || item.name}</span>
+                    </div>
+                    <div className={`px-3 py-1 rounded-full font-medium ${type === "team" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"}`}>{item.count} scans</div>
+                  </div>
+                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                    <div className={`${type === "team" ? "bg-blue-600" : "bg-purple-600"} h-2 rounded-full`} style={{ width: `${(item.count / leaderboard[0].count) * 100}%` }}></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-      {/* Team Leaderboard */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="bg-blue-600 p-4 flex items-center">
-          <Trophy className="w-6 h-6 text-white mr-2" />
-          <h2 className="text-xl font-bold text-white">Top 25 Teams</h2>
-        </div>
-        <div className="p-4">
-          {teamLeaderboard.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No team data available</p>
-          ) : (
-            <div className="space-y-4">
-              {teamLeaderboard.map((team, index) => (
-                <div key={team.id} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <div className={`${getMedalColor(index)} w-8 h-8 rounded-full flex items-center justify-center mr-3 text-white font-bold`}>
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <Users className="w-5 h-5 text-blue-600 mr-2" />
-                        <span className="font-semibold text-gray-800 capitalize">{team.id} Total</span>
-                      </div>
-                      <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
-                        {team.count} scans
-                      </div>
-                    </div>
-                    <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(team.count / teamLeaderboard[0].count) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Agent Leaderboard */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="bg-purple-600 p-4 flex items-center">
-          <Trophy className="w-6 h-6 text-white mr-2" />
-          <h2 className="text-xl font-bold text-white">Top 25 Agents</h2>
-        </div>
-        <div className="p-4">
-          {agentLeaderboard.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No agent data available</p>
-          ) : (
-            <div className="space-y-4">
-              {agentLeaderboard.map((agent, index) => (
-                <div key={agent.name} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <div className={`${getMedalColor(index)} w-8 h-8 rounded-full flex items-center justify-center mr-3 text-white font-bold`}>
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <User className="w-5 h-5 text-purple-600 mr-2" />
-                        <span className="font-semibold text-gray-800">{agent.name}</span>
-                      </div>
-                      <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-medium">
-                        {agent.count} scans
-                      </div>
-                    </div>
-                    <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-purple-600 h-2 rounded-full" 
-                        style={{ width: `${(agent.count / agentLeaderboard[0].count) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      <LeaderboardCard title="Teams" icon={<Trophy className="w-6 h-6 text-white" />} leaderboard={teamLeaderboard} type="team" />
+      <LeaderboardCard title="Agents" icon={<Trophy className="w-6 h-6 text-white" />} leaderboard={agentLeaderboard} type="agent" />
     </div>
   );
 }

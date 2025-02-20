@@ -14,7 +14,6 @@ function TeamsCampaign() {
   const [currentPage, setCurrentPage] = useState(1);
   const scansPerPage = 10;
 
- 
   useEffect(() => {
     const fetchData = () => {
       fetch('https://qrcode-compition-back.vercel.app/api/team-scans')
@@ -23,6 +22,7 @@ function TeamsCampaign() {
           const enrichedData = data.teamScans.map(scan => ({
             ...scan,
             teamName: assignTeam(scan.teamId),
+            agentName: normalizeAgentName(scan.agentName),
           }));
           setTeamScans(enrichedData);
           analyzeTeamData(enrichedData);
@@ -46,6 +46,20 @@ function TeamsCampaign() {
     return teamNames[parseInt(teamId.replace('team_', ''), 10) % teamNames.length];
   };
 
+  const normalizeAgentName = (name) => {
+    // Normalize by removing suffixes, handling different letter cases, and slight spelling variations
+    const suffixes = ['Jr.', 'Sr.', 'the 2nd'];
+    let normalized = name.toLowerCase().trim();
+
+    suffixes.forEach(suffix => {
+      if (normalized.endsWith(suffix.toLowerCase())) {
+        normalized = normalized.replace(new RegExp(`\\s?${suffix.toLowerCase()}`, 'g'), '').trim();
+      }
+    });
+
+    return normalized;
+  };
+
   const analyzeTeamData = (teamData) => {
     const teamTotals = {};
     const agentTotals = {};
@@ -56,17 +70,38 @@ function TeamsCampaign() {
       agentTotals[scan.agentName] = (agentTotals[scan.agentName] || 0) + 1;
     });
 
+    // const teamLeaderboard = Object.entries(teamTotals)
+    //   .map(([teamId, count]) => ({ teamId, count }))
+    //   .sort((a, b) => b.count - a.count);
+
+    // console.log("top teams", teamLeaderboard)
     const teamLeaderboard = Object.entries(teamTotals)
+      .map(([teamId, count]) => {
+        // Normalize the team name by removing any suffixes like "-android", "-iphone"
+        const normalizedTeamId = teamId.split('-')[0]; 
+        return { teamId: normalizedTeamId, count };
+      })
+      .reduce((acc, { teamId, count }) => {
+        // Group by normalized teamId and sum the counts
+        if (!acc[teamId]) {
+          acc[teamId] = 0;
+        }
+        acc[teamId] += count;
+        return acc;
+      }, {});
+
+    const sortedTeamLeaderboard = Object.entries(teamLeaderboard)
       .map(([teamId, count]) => ({ teamId, count }))
       .sort((a, b) => b.count - a.count);
 
-    const topTeam = teamLeaderboard[0];
+    //console.log("Top teams", sortedTeamLeaderboard);
 
+    const topTeam = sortedTeamLeaderboard[0];
     const topAgent = Object.entries(agentTotals)
       .map(([agentName, count]) => ({ agentName, count }))
       .sort((a, b) => b.count - a.count)[0];
 
-    setTeamAnalysis({ teamLeaderboard, topTeam, topAgent, totalScans });
+    setTeamAnalysis({ sortedTeamLeaderboard, topTeam, topAgent, totalScans });
   };
 
   const exportTeamDataToCSV = () => {
@@ -98,36 +133,35 @@ function TeamsCampaign() {
         </button>
       </div>
 
-    
       <div className="flex justify-between gap-5 mb-4">
-      {teamAnalysis.topTeam && (
-        <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
-          <Trophy className="text-orange-500 w-8 h-8" />
-          <div>
-            <h3 className="text-xl font-bold">Top Team: {teamAnalysis.topTeam.teamId}</h3>
-            <p className="text-lg">Scans: {teamAnalysis.topTeam.count}</p>
+        {teamAnalysis.topTeam && (
+          <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
+            <Trophy className="text-orange-500 w-8 h-8" />
+            <div>
+              <h3 className="text-xl font-bold">Top Team: {teamAnalysis.topTeam.teamId}</h3>
+              <p className="text-lg">Scans: {teamAnalysis.topTeam.count}</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {teamAnalysis.topAgent && (
-        <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
-          <User className="text-orange-500 w-8 h-8" />
-          <div>
-            <h3 className="text-xl font-bold">Top Agent: {teamAnalysis.topAgent.agentName}</h3>
-            <p className="text-lg">Scans: {teamAnalysis.topAgent.count}</p>
+        {teamAnalysis.topAgent && (
+          <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
+            <User className="text-orange-500 w-8 h-8" />
+            <div>
+              <h3 className="text-xl font-bold">Top Agent: {teamAnalysis.topAgent.agentName}</h3>
+              <p className="text-lg">Scans: {teamAnalysis.topAgent.count}</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
-        <BarChart3 className="text-orange-500 w-8 h-8" />
-        <div>
-          <h3 className="text-xl font-bold">Total Scans</h3>
-          <p className="text-lg">{teamAnalysis.totalScans}</p>
+        <div className="p-6 border-2 border-orange-500 text-black rounded-lg shadow-lg w-1/3 flex items-center gap-4">
+          <BarChart3 className="text-orange-500 w-8 h-8" />
+          <div>
+            <h3 className="text-xl font-bold">Total Scans</h3>
+            <p className="text-lg">{teamAnalysis.totalScans}</p>
+          </div>
         </div>
       </div>
-    </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
@@ -162,5 +196,3 @@ function TeamsCampaign() {
 }
 
 export default TeamsCampaign;
-
-
