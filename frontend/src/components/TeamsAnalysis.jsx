@@ -89,7 +89,7 @@ function TeamsLeaderboard() {
                     <div className="flex items-center">
                       {type === "team" ? <Users className="w-5 h-5 text-blue-600 mr-2" /> : <User className="w-5 h-5 text-purple-600 mr-2" />}
                      
-                      <span className="font-semibold text-gray-800 capitalize">{item.id || item.name}</span> <div className="ml-5 text-sm text-gray-600"> {"- " + item.teamName}</div>
+                      <span className="font-semibold text-gray-800 capitalize">{item.id || item.name}</span> <div className="ml-5 text-sm text-gray-600"> {item.teamName}</div>
                     </div>
                     <div className={`px-3 py-1 rounded-full font-medium ${type === "team" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"}`}>{item.count} scans</div>
                   </div>
