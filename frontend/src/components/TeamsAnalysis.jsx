@@ -34,31 +34,38 @@ function TeamsLeaderboard() {
   const normalizeTeamName = (team) => team.replace(/-android|-iphone/gi, "").toLowerCase();
 
   const generateLeaderboards = () => {
-    const teamCounts = {};
-    const agentCounts = {};
+  const teamCounts = {};
+  const agentCounts = {};
+  const agentTeams = {}; // Store the team name for each agent
 
-    scanData.forEach(({ teamId, agentName, userId }) => {
-      const team = normalizeTeamName(teamId);
-      teamCounts[team] = (teamCounts[team] || 0) + 1;
+  scanData.forEach(({ teamId, agentName, userId }) => {
+    const team = normalizeTeamName(teamId);
+    teamCounts[team] = (teamCounts[team] || 0) + 1;
 
-      const agent = normalizeText(agentName || userId || "Unknown");
-      agentCounts[agent] = (agentCounts[agent] || 0) + 1;
-    });
+    const agent = normalizeText(agentName || userId || "Unknown");
+    agentCounts[agent] = (agentCounts[agent] || 0) + 1;
 
-    setTeamLeaderboard(
-      Object.entries(teamCounts)
-        .map(([id, count]) => ({ id, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 25)
-    );
+    // Store the team name for each agent
+    if (!agentTeams[agent]) {
+      agentTeams[agent] = team;
+    }
+  });
 
-    setAgentLeaderboard(
-      Object.entries(agentCounts)
-        .map(([name, count]) => ({ name, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 25)
-    );
-  };
+  setTeamLeaderboard(
+    Object.entries(teamCounts)
+      .map(([id, count]) => ({ id, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+  );
+
+  setAgentLeaderboard(
+    Object.entries(agentCounts)
+      .map(([name, count]) => ({ name, count, teamName: agentTeams[name] })) // Include the teamName
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+  );
+};
+
 
   const getMedalColor = (index) => ["bg-yellow-500", "bg-gray-300", "bg-amber-600"][index] || "bg-gray-200";
 
@@ -67,7 +74,7 @@ function TeamsLeaderboard() {
   const LeaderboardCard = ({ title, icon, leaderboard, type }) => (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className={`p-4 flex items-center ${type === "team" ? "bg-blue-600" : "bg-purple-600"}`}>
-        {icon} <h2 className="text-xl font-bold text-white ml-2">Top 25 {title}</h2>
+        {icon} <h2 className="text-xl font-bold text-white ml-2">Top 5 {title}</h2>
       </div>
       <div className="p-4">
         {leaderboard.length === 0 ? (
@@ -81,10 +88,12 @@ function TeamsLeaderboard() {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       {type === "team" ? <Users className="w-5 h-5 text-blue-600 mr-2" /> : <User className="w-5 h-5 text-purple-600 mr-2" />}
-                      <span className="font-semibold text-gray-800 capitalize">{item.id || item.name}</span>
+                     
+                      <span className="font-semibold text-gray-800 capitalize">{item.id || item.name}</span> <div className="ml-5 text-sm text-gray-600"> {"- " + item.teamName}</div>
                     </div>
                     <div className={`px-3 py-1 rounded-full font-medium ${type === "team" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"}`}>{item.count} scans</div>
                   </div>
+                  
                   <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
                     <div className={`${type === "team" ? "bg-blue-600" : "bg-purple-600"} h-2 rounded-full`} style={{ width: `${(item.count / leaderboard[0].count) * 100}%` }}></div>
                   </div>
