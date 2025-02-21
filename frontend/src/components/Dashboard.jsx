@@ -4,7 +4,6 @@ import { Smartphone, TrendingUp, Download, BarChart, Calendar, ChevronDown, User
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import TeamsCampaign from './TeamsCampaign'; // Import the new component
-import TeamsAnalysis from './TeamsAnalysis';
 import TeamsLeaderboard from './TeamsAnalysis';
 dayjs.extend(weekOfYear);
 
