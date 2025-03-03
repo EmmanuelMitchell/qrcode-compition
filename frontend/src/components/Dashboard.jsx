@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Smartphone, TrendingUp, Download, BarChart, Calendar, ChevronDown, Users } from 'lucide-react';
+import { Smartphone, TrendingUp, Download, BarChart, Calendar, ChevronDown, Users, User } from 'lucide-react';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import TeamsCampaign from './TeamsCampaign'; // Import the new component
+import TeamsCampaign from './TeamsCampaign'; 
 import TeamsLeaderboard from './TeamsAnalysis';
+// import WeeklyTeamsCampaign from './WeeklyTeamsCampaign';
+// import AgentCampaign from './WeeklyTeamsCampaign';
+import AgentAnalysis from './AgentAnalysis';
+import AgentCampaign from './AgentCampaign';
 dayjs.extend(weekOfYear);
 
 function Dashboard() {
@@ -307,7 +311,19 @@ function Dashboard() {
                 <span>Teams Campaign</span>
               </div>
             </button>
-
+            <button
+      onClick={() => setActiveTab('agent-campaign')}
+      className={`py-4 px-6 text-center font-medium text-sm cursor-pointer border-b-2 transition duration-200 
+        ${activeTab === 'agent-campaign' 
+          ? 'border-orange-500 text-orange-600' 
+          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+        }`}
+    >
+      <div className="flex items-center gap-2">
+        <Calendar className="w-5 h-5" />
+        <span>Agent Campaign</span>
+      </div>
+    </button>
             <button
               onClick={() => setActiveTab('team-analysis')}
               className={`py-4 px-6 text-center font-medium text-sm cursor-pointer border-b-2 transition duration-200 
@@ -321,6 +337,19 @@ function Dashboard() {
                 <span>Teams Analysis</span>
               </div>
             </button>
+            <button
+  onClick={() => setActiveTab('agent-analysis')}
+  className={`py-4 px-6 text-center font-medium text-sm cursor-pointer border-b-2 transition duration-200 
+    ${activeTab === 'agent-analysis' 
+      ? 'border-orange-500 text-orange-600' 
+      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+    }`}
+>
+  <div className="flex items-center gap-2">
+    <User className="w-5 h-5" />
+    <span>Agent Analysis</span>
+  </div>
+</button>
           </nav>
         </div>
 
@@ -329,7 +358,9 @@ function Dashboard() {
           {activeTab === 'shop-campaign' && renderShopCampaignTab()}
           {activeTab === 'analysis' && renderAnalysisTab()}
           {activeTab === 'teams-campaign' && <TeamsCampaign  />}
+          {activeTab === 'agent-campaign' && <AgentCampaign  />} 
           {/* {activeTab === 'team-analysis' && <TeamsAnalysis  />}  */}
+          {activeTab === 'agent-analysis' && <AgentAnalysis />}
           {activeTab === 'team-analysis' && <TeamsLeaderboard  />} 
         </div>
       </div>
